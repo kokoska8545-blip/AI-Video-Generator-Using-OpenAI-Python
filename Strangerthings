@@ -1,0 +1,40 @@
+pip install moviepy
+from moviepy.editor import *
+
+# ---------------------------
+# 1. Obrázky (nahraj si vlastní soubory do stejné složky)
+# ---------------------------
+sceny = [
+    ("hawkins.jpg", "Ve městě, které znáš… se probouzí něco temného."),
+    ("eleven.jpg", "On je zpátky…"),
+    ("demogorgon.jpg", "Strach se vrací."),
+    ("hopper.jpg", "Musíme to zastavit – TEĎ!"),
+    ("vecna.jpg", "Upside Down nikdy nespí…")
+]
+
+# ---------------------------
+# 2. Hudba (nahraj si vlastní mp3, třeba soundtrack Stranger Things)
+# ---------------------------
+hudba = AudioFileClip("hudba.mp3")
+
+# ---------------------------
+# 3. Vytvoření klipů s textem
+# ---------------------------
+klipy = []
+for obrazek, text in sceny:
+    img = ImageClip(obrazek).set_duration(3).resize(width=1280)
+    txt = TextClip(text, fontsize=60, color="red", font="Arial-Bold")
+    txt = txt.set_duration(3).set_position(("center", "bottom"))
+    clip = CompositeVideoClip([img, txt])
+    klipy.append(clip)
+
+# ---------------------------
+# 4. Spojení scén + hudba
+# ---------------------------
+final = concatenate_videoclips(klipy, method="compose")
+final = final.set_audio(hudba.set_duration(final.duration))
+
+# ---------------------------
+# 5. Export
+# ---------------------------
+final.write_videofile("stranger_trailer.mp4", fps=24)
